@@ -6,32 +6,43 @@
   <title>OAI-NTN-ZeroRF Dashboard</title>
   <style>
     * { box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: #1a1a1a; color: #e0e0e0; margin: 0; padding: 1rem 2rem; min-height: 100vh; }
-    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #111; color: #e0e0e0; margin: 0; padding: 1rem 2rem; min-height: 100vh; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; color: #fff; }
     .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 1.5rem; }
     section { margin-bottom: 1.5rem; }
-    section h2 { font-size: 1.1rem; color: #b0b0b0; margin-bottom: 0.5rem; }
-    .status-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-    .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .status-dot.healthy { background: #2e7d32; }
-    .status-dot.unhealthy { background: #c62828; }
+    section h2 { font-size: 1.05rem; color: #b0b0b0; margin-bottom: 0.5rem; border-bottom: 1px solid #333; padding-bottom: 0.3rem; }
+    h3 { font-size: 0.92rem; color: #999; margin: 0.8rem 0 0.3rem; }
+    .status-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+    .status-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.82rem; background: #1e1e1e; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.healthy { background: #4caf50; }
+    .status-dot.unhealthy { background: #f44336; }
     .status-dot.unknown { background: #666; }
-    .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; margin-right: 0.3rem; }
     .badge.pass { background: #2e7d32; color: #fff; }
     .badge.fail { background: #c62828; color: #fff; }
-    table { border-collapse: collapse; width: 100%; max-width: 500px; }
-    th, td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #333; }
+    .badge.na { background: #555; color: #ccc; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.7rem; }
+    .card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 0.7rem 0.9rem; }
+    .card .label { font-size: 0.72rem; color: #888; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.2rem; }
+    .card .value { font-size: 1.3rem; font-weight: 700; color: #fff; }
+    .card .unit { font-size: 0.78rem; color: #888; font-weight: 400; }
+    .card .note { font-size: 0.68rem; color: #666; margin-top: 0.15rem; }
+    table { border-collapse: collapse; width: 100%; max-width: 650px; }
+    th, td { text-align: left; padding: 0.3rem 0.6rem; border-bottom: 1px solid #222; font-size: 0.85rem; }
     th { color: #888; font-weight: 500; }
-    #callflow-container { background: #252525; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+    td { color: #ddd; }
+    .dl-ul-table th:nth-child(2), .dl-ul-table td:nth-child(2),
+    .dl-ul-table th:nth-child(3), .dl-ul-table td:nth-child(3) { text-align: right; }
+    #callflow-container { background: #1a1a1a; padding: 1rem; border-radius: 8px; overflow-x: auto; }
     .mermaid { background: transparent; }
-    .meta { color: #888; font-size: 0.8rem; margin-top: 0.5rem; }
+    .meta { color: #666; font-size: 0.78rem; margin-top: 0.4rem; }
     pre { margin: 0; color: #ccc; }
   </style>
 </head>
 <body>
   <h1>OAI-NTN-ZeroRF Dashboard</h1>
   <p class="subtitle" id="scenario-subtitle">Software-Only 5G NTN Validation | OAI RFsimulator</p>
-  <p style="color:#6a9; font-size:0.85rem;">Dashboard loaded. Data refreshes below.</p>
 
   <section>
     <h2>System Status</h2>
@@ -39,21 +50,41 @@
   </section>
 
   <section>
-    <h2>Attach Result</h2>
-    <div id="attach-result">-</div>
+    <h2>Attach &amp; Session</h2>
+    <div id="attach-result" style="margin-bottom:0.6rem;">-</div>
+
+    <h3>UE-side (sync-relative)</h3>
+    <div id="ue-cards" class="cards"></div>
+
+    <h3>AMF-side (wall-clock)</h3>
+    <div id="amf-cards" class="cards"></div>
+
     <div id="attach-meta" class="meta"></div>
+  </section>
+
+  <section>
+    <h2>Radio Link KPIs (gNB MAC)</h2>
+    <table id="radio-table" class="dl-ul-table">
+      <thead><tr><th>KPI</th><th>DL</th><th>UL</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="meta" style="max-width:650px;">HARQ rounds = 1st-tx / 2nd / 3rd / 4th. "Non-first-tx" = sum of rounds beyond first transmission (MAC-layer HARQ retransmissions, not necessarily failures).</p>
+  </section>
+
+  <section>
+    <h2>Latency (Ping)</h2>
+    <div id="ping-info" class="meta" style="margin-bottom:0.4rem;"></div>
+    <div id="ping-cards" class="cards"></div>
+  </section>
+
+  <section>
+    <h2>Throughput (iperf3, 5 s)</h2>
+    <div id="tp-cards" class="cards"></div>
   </section>
 
   <section>
     <h2>NTN Configuration</h2>
     <table id="ntn-table">
-      <tbody></tbody>
-    </table>
-  </section>
-
-  <section>
-    <h2>KPIs</h2>
-    <table id="kpi-table">
       <tbody></tbody>
     </table>
   </section>
@@ -68,12 +99,24 @@
 
   <script>
     (function() {
+      function fmt(val, unit) {
+        if (val == null) return '<span style="color:#666">n/a</span>';
+        return val + (unit ? ' ' + unit : '');
+      }
+
+      function makeCard(label, val, unit, note) {
+        var display = (val != null) ? val : '<span style="color:#666">n/a</span>';
+        var u = (val != null && unit) ? ' <span class="unit">' + unit + '</span>' : '';
+        var n = note ? '<div class="note">' + note + '</div>' : '';
+        return '<div class="card"><div class="label">' + label + '</div><div class="value">' + display + u + '</div>' + n + '</div>';
+      }
+
       function renderStatus(containers) {
         var el = document.getElementById('status');
         if (!el) return;
         var names = ['rfsim5g-mysql', 'rfsim5g-oai-amf', 'rfsim5g-oai-smf', 'rfsim5g-oai-upf', 'rfsim5g-oai-ext-dn', 'rfsim5g-oai-gnb', 'rfsim5g-oai-nr-ue'];
         if (!containers || containers.length === 0) {
-          el.innerHTML = '<span class="status-dot unknown"></span> No container data (run demo first)';
+          el.innerHTML = '<span class="status-dot unknown"></span> No container data';
           return;
         }
         var byName = {};
@@ -84,40 +127,95 @@
           state = state.toLowerCase();
           var healthy = state.indexOf('running') !== -1;
           var cls = healthy ? 'healthy' : (state ? 'unhealthy' : 'unknown');
-          return '<span title="' + n + '" class="status-dot ' + cls + '"></span> ' + n;
-        }).join(' ');
+          var short = n.replace('rfsim5g-', '');
+          return '<span class="status-chip"><span class="status-dot ' + cls + '"></span>' + short + '</span>';
+        }).join('');
       }
 
       function renderSummary(data) {
         if (!data) data = { error: 'No data' };
         var attachEl = document.getElementById('attach-result');
-        var metaEl = document.getElementById('attach-meta');
         if (attachEl) {
           if (data.error) {
             attachEl.innerHTML = '<span class="badge fail">No report</span>';
           } else {
-            attachEl.innerHTML = data.attach_success ? '<span class="badge pass">PASS</span>' : '<span class="badge fail">FAIL</span>';
+            var badges = '';
+            badges += data.attach_success ? '<span class="badge pass">ATTACH OK</span>' : '<span class="badge fail">ATTACH FAILED</span>';
+            badges += data.pdu_session_established ? '<span class="badge pass">PDU SESSION OK</span>' : '<span class="badge fail">PDU SESSION FAILED</span>';
+            attachEl.innerHTML = badges;
           }
         }
-        if (metaEl) metaEl.textContent = data.timestamp || '';
+
+        var uc = document.getElementById('ue-cards');
+        if (uc) {
+          uc.innerHTML =
+            makeCard('RSRP', data.rsrp_dbre, 'dB/RE') +
+            makeCard('Sync Time', data.sync_time_ms, 'ms') +
+            makeCard('Attach Latency', data.ue_attach_latency_ms, 'ms', 'sync → RRC Connected') +
+            makeCard('PDU Setup', data.ue_pdu_session_setup_ms, 'ms', 'sync → DRB added');
+        }
+
+        var ac = document.getElementById('amf-cards');
+        if (ac) {
+          ac.innerHTML =
+            makeCard('Req → Accept', data.amf_req_to_accept_ms, 'ms') +
+            makeCard('Req → Complete', data.amf_req_to_complete_ms, 'ms') +
+            makeCard('Req → PDU', data.amf_req_to_pdu_ms, 'ms');
+        }
+
+        var metaEl = document.getElementById('attach-meta');
+        if (metaEl) metaEl.textContent = data.timestamp ? 'Last updated: ' + data.timestamp : '';
+
+        var radioTbody = document.querySelector('#radio-table tbody');
+        if (radioTbody) {
+          radioTbody.innerHTML =
+            '<tr><th>BLER</th><td>' + fmt(data.dl_bler) + '</td><td>' + fmt(data.ul_bler) + '</td></tr>' +
+            '<tr><th>MCS index</th><td>' + fmt(data.dl_mcs) + '</td><td>' + fmt(data.ul_mcs) + '</td></tr>' +
+            '<tr><th>HARQ rounds</th><td>' + fmt(data.dl_harq_rounds) + '</td><td>' + fmt(data.ul_harq_rounds) + '</td></tr>' +
+            '<tr><th>HARQ non-first-tx</th><td>' + fmt(data.dl_harq_non_first_tx) + '</td><td>' + fmt(data.ul_harq_non_first_tx) + '</td></tr>' +
+            '<tr><th>TB errors</th><td>' + fmt(data.dl_errors) + '</td><td>' + fmt(data.ul_errors) + '</td></tr>' +
+            '<tr><th>SNR</th><td>n/a</td><td>' + fmt(data.ul_snr_db, 'dB') + '</td></tr>' +
+            '<tr><th>PRBs</th><td>n/a</td><td>' + fmt(data.ul_nprb) + '</td></tr>';
+        }
+
+        var pingInfo = document.getElementById('ping-info');
+        if (pingInfo) {
+          var target = data.ping_target || '?';
+          var ran = data.ping_ran;
+          pingInfo.textContent = 'Target: ' + target + ' (ext-dn)' + (ran ? '' : ' — test did not run: ' + (data.ping_error || 'unknown'));
+        }
+        var pc = document.getElementById('ping-cards');
+        if (pc) {
+          pc.innerHTML =
+            makeCard('RTT Avg', data.ping_rtt_avg_ms, 'ms') +
+            makeCard('RTT Min', data.ping_rtt_min_ms, 'ms') +
+            makeCard('RTT Max', data.ping_rtt_max_ms, 'ms') +
+            makeCard('Loss', data.ping_loss_pct, '%');
+        }
+
+        var tc = document.getElementById('tp-cards');
+        if (tc) {
+          var ulRan = data.ul_throughput_test_ran;
+          var dlRan = data.dl_throughput_test_ran;
+          tc.innerHTML =
+            makeCard('UL Bitrate', ulRan ? data.ul_throughput_mbps : null, 'Mbps', ulRan ? '' : 'error: ' + (data.ul_throughput_error || '?')) +
+            makeCard('DL Bitrate', dlRan ? data.dl_throughput_mbps : null, 'Mbps', dlRan ? '' : 'error: ' + (data.dl_throughput_error || '?')) +
+            makeCard('UL Transfer', ulRan ? data.ul_transfer_mb : null, 'MB') +
+            makeCard('DL Transfer', dlRan ? data.dl_transfer_mb : null, 'MB') +
+            makeCard('UL TCP Retx', ulRan ? data.ul_tcp_retransmissions : null, '') +
+            makeCard('DL TCP Retx', dlRan ? data.dl_tcp_retransmissions : null, '');
+        }
 
         var ntnTbody = document.querySelector('#ntn-table tbody');
         if (ntnTbody) {
-          ntnTbody.innerHTML = '<tr><th>Band</th><td>' + (data.band != null ? data.band : '-') + '</td></tr>' +
-            '<tr><th>Koffset (GEO)</th><td>' + (data.koffset != null ? data.koffset : '-') + '</td></tr>' +
-            '<tr><th>HARQ disabled</th><td>' + (data.harq_disabled !== false ? 'Yes' : 'No') + '</td></tr>' +
-            '<tr><th>Injected delay (ms)</th><td>' + (data.injected_delay_ms != null ? data.injected_delay_ms : '-') + '</td></tr>' +
+          ntnTbody.innerHTML =
+            '<tr><th>Band</th><td>' + fmt(data.band) + '</td></tr>' +
+            '<tr><th>Koffset (GEO)</th><td>' + fmt(data.koffset) + '</td></tr>' +
+            '<tr><th>HARQ disabled</th><td>' + (data.harq_disabled ? 'Yes' : 'No') + '</td></tr>' +
+            '<tr><th>Injected delay</th><td>' + fmt(data.injected_delay_ms, 'ms') + '</td></tr>' +
             '<tr><th>SIB19 broadcast</th><td>' + (data.sib19_broadcast ? 'Yes' : 'No') + '</td></tr>';
         }
-        var kpiTbody = document.querySelector('#kpi-table tbody');
-        if (kpiTbody) {
-          kpiTbody.innerHTML = '<tr><th>Attach success</th><td>' + (data.attach_success ? 'Yes' : 'No') + '</td></tr>' +
-            '<tr><th>PDU session</th><td>' + (data.pdu_session_established ? 'Yes' : 'No') + '</td></tr>' +
-            '<tr><th>Attach latency (ms)</th><td>' + (data.attach_latency_ms != null ? data.attach_latency_ms : '-') + '</td></tr>' +
-            '<tr><th>Ping RTT avg (ms)</th><td>' + (data.ping_rtt_avg_ms != null ? data.ping_rtt_avg_ms : '-') + '</td></tr>' +
-            '<tr><th>Ping RTT min (ms)</th><td>' + (data.ping_rtt_min_ms != null ? data.ping_rtt_min_ms : '-') + '</td></tr>' +
-            '<tr><th>Ping RTT max (ms)</th><td>' + (data.ping_rtt_max_ms != null ? data.ping_rtt_max_ms : '-') + '</td></tr>';
-        }
+
         var st = document.getElementById('scenario-subtitle');
         if (st && data.scenario) { st.textContent = data.scenario + ' | OAI RFsimulator'; }
       }
