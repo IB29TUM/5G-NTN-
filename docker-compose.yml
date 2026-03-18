@@ -98,7 +98,7 @@ services:
       retries: 5
 
   oai-gnb:
-    image: ${OAI_GNB_IMAGE:-oaisoftwarealliance/oai-gnb}:${OAI_TAG:-develop}
+    image: ${OAI_GNB_IMAGE:-oaisoftwarealliance/oai-gnb}:${OAI_TAG:-2026.w09}
     container_name: rfsim5g-oai-gnb
     privileged: true
     cpu_rt_runtime: 400000
@@ -125,7 +125,7 @@ services:
       retries: 5
 
   oai-nr-ue:
-    image: ${OAI_NRUE_IMAGE:-oaisoftwarealliance/oai-nr-ue}:${OAI_TAG:-develop}
+    image: ${OAI_NRUE_IMAGE:-oaisoftwarealliance/oai-nr-ue}:${OAI_TAG:-2026.w09}
     container_name: rfsim5g-oai-nr-ue
     privileged: true
     cpu_rt_runtime: 400000

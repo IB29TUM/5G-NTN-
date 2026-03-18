@@ -24,6 +24,9 @@ venv/
 *.swp
 *.swo
 
+# Personal notes
+indra.md
+
 # OS
 .DS_Store
 Thumbs.db
