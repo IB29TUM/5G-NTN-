@@ -1,0 +1,33 @@
+# Logs and generated reports
+logs/*.log
+reports/summary.json
+reports/kpis.md
+reports/callflow.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+venv/
+.venv/
+*.egg-info/
+.eggs/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keep directory structure
+!logs/.gitkeep
+!reports/.gitkeep

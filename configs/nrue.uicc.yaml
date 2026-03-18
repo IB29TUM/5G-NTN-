@@ -1,0 +1,26 @@
+uicc0:
+  imsi: "208990100001100"
+  key: "fec86ba6eb707ed08905757b1bb44b8f"
+  opc: "C42449363BBAD02B66D16BC975D77CC1"
+  pdu_sessions:
+    - dnn: "oai"
+      nssai_sst: 1
+
+rfsimulator:
+  - serveraddr: 192.168.71.140
+
+security:
+  ciphering_algorithms: [nea0]
+  integrity_algorithms: [nia2, nia0]
+  drb_ciphering: yes
+  drb_integrity: no
+
+log_config:
+  global_log_level: info
+  hw_log_level: info
+  phy_log_level: info
+  mac_log_level: info
+  rlc_log_level: info
+  pdcp_log_level: info
+  rrc_log_level: info
+  nas_log_level: debug
