@@ -213,7 +213,7 @@ Run `make pull` to download all required images.
 |----------|---------------|
 | [README.md](README.md) | This file — setup and usage |
 | [indra.md](indra.md) | Detailed walkthrough of every file, the RT cgroup debugging, and architecture |
-| [aswers.md](aswers.md) | Assignment answers (OAI vs srsRAN, why NTN, lessons learned) |
+| [aswers.md](answers.md) | Assignment answers (OAI vs srsRAN, why NTN, lessons learned) |
 | [docs/architecture.md](docs/architecture.md) | Component diagram, data flow, network topology |
 | [docs/phy_boundary.md](docs/phy_boundary.md) | What's real vs simulated at the PHY layer |
 | [docs/ntn_limitations.md](docs/ntn_limitations.md) | RT cgroup root cause, NTN band 256 bug, gap table |
