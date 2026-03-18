@@ -1,4 +1,4 @@
-# Assignment Answers (aswers.md)
+# Assignment Answers (answers.md)
 
 ## 1. Why did you choose OAI vs srsRAN?
 
