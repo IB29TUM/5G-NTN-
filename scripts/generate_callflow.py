@@ -19,7 +19,7 @@ def main():
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
     events = []
-    for name, path in [("gnb", LOGS_DIR / "gnb.log"), ("amf", LOGS_DIR / "amf.log"), ("ue", LOGS_DIR / "nr-ue.log")]:
+    for name, path in [("gnb", LOGS_DIR / "gnb.log"), ("amf", LOGS_DIR / "amf.log"), ("ue", LOGS_DIR / "nrue.log")]:
         if not path.exists():
             continue
         for line in path.read_text(errors="replace").splitlines():
