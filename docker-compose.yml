@@ -101,8 +101,11 @@ services:
     image: ${OAI_GNB_IMAGE:-oaisoftwarealliance/oai-gnb}:${OAI_TAG:-2026.w09}
     container_name: rfsim5g-oai-gnb
     privileged: true
-    cpu_rt_runtime: 400000
-    cpu_rt_period: 1000000
+    # Real-time CPU scheduling: required on some setups (e.g., WSL2/cgroup v1),
+    # but unsupported on others (e.g., cgroup v2). `scripts/run_demo.sh` sets
+    # OAI_CPU_RT_RUNTIME/OAI_CPU_RT_PERIOD accordingly before `docker compose up`.
+    cpu_rt_runtime: ${OAI_CPU_RT_RUNTIME:-400000}
+    cpu_rt_period: ${OAI_CPU_RT_PERIOD:-1000000}
     cap_add:
       - SYS_NICE
       - NET_ADMIN
@@ -128,8 +131,8 @@ services:
     image: ${OAI_NRUE_IMAGE:-oaisoftwarealliance/oai-nr-ue}:${OAI_TAG:-2026.w09}
     container_name: rfsim5g-oai-nr-ue
     privileged: true
-    cpu_rt_runtime: 400000
-    cpu_rt_period: 1000000
+    cpu_rt_runtime: ${OAI_CPU_RT_RUNTIME:-400000}
+    cpu_rt_period: ${OAI_CPU_RT_PERIOD:-1000000}
     cap_add:
       - NET_ADMIN
       - NET_RAW
