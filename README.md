@@ -103,11 +103,11 @@ python3 --version         # Need >= 3.8
 ## Step 1 — Clone the Repo
 
 ```bash
-git clone <repo-url> 5G-E2E-Lab
-cd 5G-E2E-Lab
+git clone <repo-url>
+cd (folder name)
 ```
 
-Or if you already have it, just `cd 5G-E2E-Lab`.
+Or if you already have it, just `cd (foldername)`.
 
 ---
 
