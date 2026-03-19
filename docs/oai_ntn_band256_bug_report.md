@@ -34,16 +34,16 @@ The config specifies:
 
 Per 3GPP TS 38.213, Table 13-1 (SS/PBCH and CORESET multiplexing pattern 1, 15 kHz SCS):
 
-| Index | CORESET RBs | Symbols | Offset |
-|-------|-------------|---------|--------|
-| 0     | 24          | 2       | 0      |
-| 1     | 24          | 2       | 2      |
-| **2** | **48**      | **1**   | **2**  |
+| Index | CORESET RBs | Symbols | Offset (Table 13-1) |
+|-------|-------------|---------|---------------------|
+| 0     | 24          | 2       | 0                   |
+| 1     | 24          | 2       | 2                   |
+| **2** | **48**      | **1**   | **2**               |
 
-Index 2 requires a 48-RB CORESET. The carrier is only 25 PRBs wide.
-The function `get_type0_PDCCH_CSS_config_parameters()` computes the CORESET start RB
-as a negative value (-3) because 48 + offset cannot fit in 25 PRBs, triggering the
-assertion.
+The crash output reports **RB offset 4** (not 2). OAI applies an internal offset (e.g. kSSB-based)
+on top of the table value, yielding 4. The computed `cset_start_rb = -3` is consistent with
+that (e.g. 1 − 4 = −3 with SSB offset point A 1). Index 2 still requires a 48-RB CORESET; the
+carrier is only 25 PRBs wide, so the result is invalid and triggers the assertion.
 
 ## What Was Tested
 
@@ -60,6 +60,8 @@ assertion.
     oaisoftwarealliance/oai-gnb:2026.w09 \
     /opt/oai-gnb/bin/nr-softmodem -O /opt/oai-gnb/etc/gnb.conf --rfsim --noS1
   ```
+  `--noS1` is used to isolate the PHY initialization crash from AMF connectivity. The
+  assertion fires during gNB startup before any core network interaction.
 - **Result:** CRASH — `Assertion (type0_PDCCH_CSS_config->cset_start_rb >= 0) failed!`
   Exit code 255.
 

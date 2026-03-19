@@ -9,13 +9,15 @@ This project implements a **software-only** 5G NTN (Non-Terrestrial Network) val
 ```mermaid
 flowchart LR
   subgraph host [Host]
-    subgraph docker [Docker Network 192.168.71.128/26]
+    subgraph public_net [public_net 192.168.71.128/26]
       UE[nrUE]
-      gNB[gNB Band 256]
+      gNB[gNB Band 78 active]
       AMF[AMF]
       SMF[SMF]
       UPF[UPF]
       MySQL[MySQL]
+    end
+    subgraph traffic_net [traffic_net 192.168.72.128/26]
       extDN[ext-dn]
     end
   end
@@ -27,10 +29,11 @@ flowchart LR
   UPF <-->|N6| extDN
   UE -.->|GTP-U tunnel oaitun_ue1| UPF
 ```
+Note: Demo runs on **Band 78** due to an upstream OAI CORESET#0 bug. See [docs/oai_ntn_band256_bug_report.md](oai_ntn_band256_bug_report.md). Band 256 NTN config is present in `configs/`.
 
 ## Data Flow
 
-1. **Control plane**: UE (OAI nr-uesoftmodem) connects to gNB via **RFsimulator** (TCP port 4043). IQ samples are exchanged over the network instead of over-the-air. The gNB runs in server mode; the UE connects as client to the gNB's RFsimulator endpoint.
+1. **Air interface (RFsim)**: UE (OAI nr-uesoftmodem) connects to gNB via **RFsimulator** (TCP port 4043). IQ samples (PHY layer) are exchanged over the network instead of over-the-air. The gNB runs in server mode; the UE connects as client to the gNB's RFsimulator endpoint. RRC/NAS (control plane) run on top of this radio link.
 2. **NGAP**: gNB is connected to OAI 5G Core AMF over SCTP (NGAP). Registration, authentication, and PDU session establishment follow 3GPP SA procedures.
 3. **User plane**: After PDU session is established, UE gets an IP on `oaitun_ue1`. Traffic is routed via UPF to the external data network container (`ext-dn` at 192.168.72.135).
 

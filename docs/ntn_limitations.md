@@ -17,8 +17,10 @@ thread scheduling, even with `CAP_SYS_NICE` granted.
      nsenter -t 1 -m -u -i -n sh -c \
      'echo 950000 > /sys/fs/cgroup/cpu/docker/cpu.rt_runtime_us'
    ```
-2. Add `cpu_rt_runtime: 400000` and `cpu_rt_period: 1000000` to gNB and UE
-   services in `docker-compose.yml` (plus `privileged: true`).
+2. Add `cpu_rt_runtime: ${OAI_CPU_RT_RUNTIME:-400000}` and
+   `cpu_rt_period: ${OAI_CPU_RT_PERIOD:-1000000}` to gNB and UE services in
+   `docker-compose.yml` (plus `privileged: true`). Values are env-var driven for
+   portability; defaults match the numbers above.
 
 This grants each container 400 ms of real-time CPU budget per 1 s period,
 allowing OAI's `threadCreate()` with `SCHED_FIFO` to succeed.
@@ -33,7 +35,7 @@ the gNB crashes with:
 
 ```
 Assertion (type0_PDCCH_CSS_config->cset_start_rb >= 0) failed!
-  in get_type0_PDCCH_CSS_config_parameters() nr_mac_common.c:3881
+  in get_type0_PDCCH_CSS_config_parameters() openair2/LAYER2/NR_MAC_COMMON/nr_mac_common.c:3881
 ```
 
 This occurs with both `2026.w09` and `develop` OAI images. The issue is in the
@@ -41,9 +43,10 @@ CORESET#0 RB allocation calculation for NTN band 256 (S-band, 25 PRBs, 15 kHz SC
 With `initialDLBWPcontrolResourceSetZero = 2`, the computed `cset_start_rb` becomes
 negative because the CORESET bandwidth + offset exceeds the carrier bandwidth.
 
-The official OAI config (`gnb.sa.band256.ntn.mu0.25prb.rfsim.conf`) uses the same
-parameter value, suggesting this is a regression or requires a specific OAI branch
-not yet in the `develop` mainline.
+The official OAI config (`gnb.sa.band256.ntn.mu0.25prb.rfsim.conf`, stored in this
+repo as `configs/oai_official_ntn_band256.conf`) uses the same parameter value,
+suggesting this is a regression or requires a specific OAI branch not yet in the
+`develop` mainline.
 
 **Current mitigation:** The demo runs with terrestrial band 78 config, which
 exercises the full protocol stack (attach, PDU session, data plane) successfully.
