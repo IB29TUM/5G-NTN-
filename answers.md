@@ -1,5 +1,9 @@
 # Assignment Answers (answers.md)
 
+Proof that the system runs end-to-end (dashboard with ATTACH OK / PDU SESSION OK, KPIs, and call flow diagram) is in the [README — Proof the system works](README.md#proof-the-system-works) section.
+
+---
+
 ## 1. Why did you choose OAI vs srsRAN?
 
 **Balanced comparison**

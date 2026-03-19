@@ -162,6 +162,30 @@ make gui
 
 ---
 
+## Proof the system works
+
+The screenshots below show a successful run: all components up, UE attached, PDU session established, KPIs and call flow generated.
+
+**1. Dashboard — status and attach**
+
+![Dashboard status and attach](reports/screenshots/image.png)
+
+*All components green; ATTACH OK and PDU SESSION OK; UE/AMF latency and radio KPIs.*
+
+**2. Dashboard — latency, throughput, NTN config**
+
+![Latency throughput NTN config](reports/screenshots/Screenshot 2026-03-19 114813.png)
+
+*Ping RTT to ext-dn, iperf3 UL/DL throughput, Band 78 / NTN config panel.*
+
+**3. Call flow diagram**
+
+![Call flow diagram](reports/screenshots/Screenshot 2026-03-19 114850.png)
+
+*Mermaid sequence: RRC Setup, registration, security, PDU session established.*
+
+---
+
 ## Step 5 — Stop Everything
 
 ```bash
