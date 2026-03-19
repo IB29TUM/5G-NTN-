@@ -210,7 +210,7 @@ To restart later: `make run` (handles everything again).
 
 ---
 
-## Troubleshooting
+## Troubleshooting if required
 
 ### gNB or UE crashes with `pthread_create EAGAIN`
 The RT cgroup fix wasn't applied. `make run` does it automatically, but if running manually:
@@ -236,7 +236,6 @@ Run `make pull` to download all required images.
 | Document | What it covers |
 |----------|---------------|
 | [README.md](README.md) | This file — setup and usage |
-| [indra.md](indra.md) | Detailed walkthrough of every file, the RT cgroup debugging, and architecture |
 | [answers.md](answers.md) | Assignment answers (OAI vs srsRAN, why NTN, lessons learned) |
 | [docs/architecture.md](docs/architecture.md) | Component diagram, data flow, network topology |
 | [docs/phy_boundary.md](docs/phy_boundary.md) | What's real vs simulated at the PHY layer |
@@ -244,15 +243,6 @@ Run `make pull` to download all required images.
 | [versions/component_versions.md](versions/component_versions.md) | Pinned image versions |
 
 ---
-
-## Why NTN?
-
-This project aligns with **OQ Technology**-style satellite/NTN use cases. NTN is chosen to demonstrate understanding of delay, Koffset, SIB19, and extended timers, and to provide a baseline for future NTN digital-twin or integration work.
-
-## Why OAI?
-
-OAI provides a full open path: **UE + gNB + RFsimulator** without hardware. We use it for full-stack control and RF abstraction. See [answers.md](answers.md) for a balanced OAI vs srsRAN comparison.
-
 ## Limitations
 
 - Demo runs on **Band 78** (terrestrial) due to an upstream OAI CORESET#0 bug with Band 256; NTN configs are in the repo
