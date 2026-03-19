@@ -162,7 +162,7 @@ make gui
 
 ---
 
-## Proof the system works
+## Refernce that system works
 
 The screenshots below show a successful run: all components up, UE attached, PDU session established, KPIs and call flow generated.
 
@@ -174,13 +174,13 @@ The screenshots below show a successful run: all components up, UE attached, PDU
 
 **2. Dashboard — latency, throughput, NTN config**
 
-![Latency throughput NTN config](reports/screenshots/Screenshot 2026-03-19 114813.png)
+![Latency throughput NTN config](reports/screenshots/screenshot-dashboard-latency-throughput.png)
 
 *Ping RTT to ext-dn, iperf3 UL/DL throughput, Band 78 / NTN config panel.*
 
 **3. Call flow diagram**
 
-![Call flow diagram](reports/screenshots/Screenshot 2026-03-19 114850.png)
+![Call flow diagram](reports/screenshots/screenshot-callflow.png)
 
 *Mermaid sequence: RRC Setup, registration, security, PDU session established.*
 
