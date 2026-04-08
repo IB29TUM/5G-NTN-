@@ -236,7 +236,6 @@ Run `make pull` to download all required images.
 | Document | What it covers |
 |----------|---------------|
 | [README.md](README.md) | This file — setup and usage |
-| [answers.md](answers.md) | Assignment answers (OAI vs srsRAN, why NTN, lessons learned) |
 | [docs/architecture.md](docs/architecture.md) | Component diagram, data flow, network topology |
 | [docs/phy_boundary.md](docs/phy_boundary.md) | What's real vs simulated at the PHY layer |
 | [docs/ntn_limitations.md](docs/ntn_limitations.md) | RT cgroup root cause, NTN band 256 bug, gap table |
